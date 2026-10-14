@@ -42,6 +42,7 @@ dependencies {
     // Media3 ExoPlayer (HLS/m3u8 native playback)
     implementation("androidx.media3:media3-exoplayer:1.2.1")
     implementation("androidx.media3:media3-exoplayer-hls:1.2.1")
+    implementation("androidx.media3:media3-datasource:1.2.1")
     implementation("androidx.media3:media3-ui:1.2.1")
 
     // Networking (fetch play page + 解析 page, extract m3u8)
