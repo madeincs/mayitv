@@ -38,6 +38,9 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     // Media3 ExoPlayer (HLS/m3u8 native playback)
     implementation("androidx.media3:media3-exoplayer:1.2.1")
@@ -45,6 +48,8 @@ dependencies {
     implementation("androidx.media3:media3-datasource:1.2.1")
     implementation("androidx.media3:media3-ui:1.2.1")
 
-    // Networking (fetch play page + 解析 page, extract m3u8)
+    // Networking + parsing + image loading
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("org.jsoup:jsoup:1.17.2")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 }

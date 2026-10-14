@@ -46,6 +46,7 @@ class PlayerActivity : AppCompatActivity() {
                 or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
 
         val url = intent.getStringExtra("url") ?: run { finish(); return }
+        binding.title.text = intent.getStringExtra("title") ?: ""
         resolveAndPlay(url)
     }
 
