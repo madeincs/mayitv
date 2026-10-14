@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="player_hint">OK 播放/暂停    ← → 快退/快进    ↑↓ 音量    返回 退出</string>
+</resources>
