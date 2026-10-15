@@ -11,7 +11,7 @@ object Parser {
     /** 首页/分类/搜索的影片列表（共用 stui 模板的 .stui-vodlist__box） */
     fun parseList(html: String): List<Vod> {
         val doc = Jsoup.parse(html, BASE)
-        return doc.select(".stui-vodlist__box").map { box ->
+        val list = doc.select(".stui-vodlist__box").map { box ->
             val a = box.selectFirst(".stui-vodlist__thumb")
             val href = a?.absUrl("href") ?: ""
             val id = ID_RE.find(href)?.groupValues?.getOrNull(1) ?: ""
@@ -22,6 +22,8 @@ object Parser {
             val remark = box.selectFirst(".pic-text")?.text() ?: ""
             Vod(id, title, cover, remark)
         }
+        L.d("parseList -> ${list.size}")
+        return list
     }
 
     /** 详情页：信息 + 多播放源 + 选集 */
@@ -46,6 +48,7 @@ object Parser {
             }
             if (eps.isNotEmpty()) sources.add(PlaySource(name, eps))
         }
+        L.d("parseDetail -> sources=${sources.size} eps0=${sources.firstOrNull()?.episodes?.size ?: 0}")
         return VodDetail(id, title, cover, info, desc, sources)
     }
 }

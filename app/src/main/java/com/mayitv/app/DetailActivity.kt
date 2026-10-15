@@ -39,9 +39,11 @@ class DetailActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val d = Repo.detail(id)
             if (d == null) {
+                L.e("Detail: 加载失败 id=$id")
                 b.title.text = "加载失败，请返回重试"
                 return@launch
             }
+            L.d("Detail: ${d.title} sources=${d.sources.size}")
             detail = d
             b.title.text = d.title
             b.info.text = d.info
@@ -89,6 +91,7 @@ class DetailActivity : AppCompatActivity() {
 
     private fun play(ep: Episode) {
         val d = detail ?: return
+        L.d("Detail: play ${ep.name} url=${ep.playUrl}")
         startActivity(
             Intent(this, PlayerActivity::class.java)
                 .putExtra("url", ep.playUrl)

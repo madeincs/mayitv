@@ -112,6 +112,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadHome() {
         loading = true
+        L.d("Main: loadHome")
         lifecycleScope.launch {
             adapter.set(Repo.home())
             loading = false
@@ -120,6 +121,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadCategory(type: Int, p: Int) {
         loading = true
+        L.d("Main: loadCategory($type,$p)")
         lifecycleScope.launch {
             val list = Repo.category(type, p)
             if (p == 1) adapter.set(list) else adapter.add(list)
@@ -140,14 +142,17 @@ class MainActivity : AppCompatActivity() {
     /** 检查更新：私有仓库/查询失败时回退到浏览器打开下载页 */
     private fun checkUpdate() {
         toast("检查更新中…")
+        L.d("Main: checkUpdate current=(${BuildConfig.VERSION_CODE})")
         lifecycleScope.launch {
             val rel = UpdateChecker.latest()
             if (rel == null) {
+                L.w("Main: 更新查询失败，回退浏览器")
                 startActivity(
                     Intent(Intent.ACTION_VIEW, android.net.Uri.parse(UpdateChecker.webUrl))
                 )
                 return@launch
             }
+            L.d("Main: 最新版本 v${rel.versionCode} url=${rel.apkUrl}")
             if (rel.versionCode <= BuildConfig.VERSION_CODE) {
                 toast("已是最新版本")
                 return@launch
@@ -155,9 +160,11 @@ class MainActivity : AppCompatActivity() {
             toast("发现新版本 v${rel.versionCode}，开始下载…")
             val file = UpdateChecker.download(this@MainActivity, rel.apkUrl)
             if (file == null) {
+                L.e("Main: APK 下载失败")
                 toast("下载失败，请重试或手动更新")
                 return@launch
             }
+            L.d("Main: 下载完成 ${file.length()} bytes")
             installApk(file)
         }
     }

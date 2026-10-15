@@ -21,9 +21,11 @@ object Net {
                 .apply { if (referer != null) header("Referer", referer) }
                 .build()
             client.newCall(req).execute().use { resp ->
+                L.d("GET ${resp.code} $url")
                 if (resp.isSuccessful) resp.body?.string() else null
             }
         } catch (e: Exception) {
+            L.e("GET fail $url : ${e.message}", e)
             null
         }
     }

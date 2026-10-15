@@ -18,14 +18,19 @@ object UpdateChecker {
 
     suspend fun latest(): Release? = withContext(Dispatchers.IO) {
         try {
-            val json = Net.get(RELEASES_URL) ?: return@withContext null
+            val json = Net.get(RELEASES_URL)
+            if (json == null) { L.w("Update: releases API 无响应"); return@withContext null }
             val obj = JSONObject(json)
             val vc = obj.optString("tag_name").removePrefix("v").toIntOrNull()
-                ?: return@withContext null
-            val asset = obj.optJSONArray("assets")?.optJSONObject(0) ?: return@withContext null
+                ?: run { L.e("Update: tag_name 解析失败"); return@withContext null }
+            val asset = obj.optJSONArray("assets")?.optJSONObject(0)
+                ?: run { L.e("Update: 无 asset"); return@withContext null }
             val url = asset.optString("browser_download_url")
-            if (url.isBlank()) null else Release(vc, url, asset.optString("name"))
+            if (url.isBlank()) { L.e("Update: asset 无下载地址"); return@withContext null }
+            L.d("Update: latest=v$vc asset=${asset.optString("name")}")
+            Release(vc, url, asset.optString("name"))
         } catch (e: Exception) {
+            L.e("Update: 查询异常 ${e.message}", e)
             null
         }
     }

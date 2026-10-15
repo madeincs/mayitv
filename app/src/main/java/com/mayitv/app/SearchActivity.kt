@@ -64,6 +64,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun doSearch(p: Int) {
         loading = true
+        L.d("Search: doSearch('$kw',$p)")
         lifecycleScope.launch {
             val list = Repo.search(kw, p)
             if (p == 1) adapter.set(list) else adapter.add(list)

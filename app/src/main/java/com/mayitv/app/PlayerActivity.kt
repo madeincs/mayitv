@@ -52,14 +52,17 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun resolveAndPlay(url: String) {
         showStatus("解析中…")
+        L.d("Player: resolveAndPlay $url")
         Thread {
             val info = PlayResolver.resolve(url)
+            L.d("Player: resolve done m3u8=${info.m3u8} from=${info.from}")
             runOnUiThread {
                 nextLink = info.nextLink
                 prevLink = info.prevLink
                 if (info.m3u8 != null) {
                     startPlayback(info.m3u8)
                 } else {
+                    L.w("Player: 解析失败，回退 WebView")
                     showStatus("解析失败，使用网页播放")
                     fallbackWebView(url)
                 }
@@ -82,6 +85,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun startPlayback(m3u8: String) {
         releasePlayer()
+        L.d("Player: startPlayback $m3u8")
 
         val httpFactory = DefaultHttpDataSource.Factory()
             .setUserAgent(SiteConfig.UA)
@@ -94,16 +98,22 @@ class PlayerActivity : AppCompatActivity() {
         p.playWhenReady = true
         p.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {
+                L.d("Player: state=$state (${stateName(state)})")
                 if (state == Player.STATE_BUFFERING) showStatus("缓冲中…")
                 else if (state == Player.STATE_READY) showStatus("▶ 播放中")
             }
 
             override fun onPlayerError(error: PlaybackException) {
+                L.e("Player: onPlayerError ${error.errorCodeName} ${error.message}", error)
                 showStatus("播放失败，请重试或换源")
             }
         })
         binding.playerView.player = p
         player = p
+    }
+
+    private fun stateName(s: Int) = when (s) {
+        1 -> "IDLE"; 2 -> "BUFFERING"; 3 -> "READY"; 4 -> "ENDED"; else -> "?"
     }
 
     private fun releasePlayer() {
