@@ -7,17 +7,31 @@ android {
     namespace = "com.mayitv.app"
     compileSdk = 34
 
+    // 固定签名密钥：所有版本同一把钥匙，新版可覆盖旧版（免卸载热更新）
+    signingConfigs {
+        create("fixed") {
+            storeFile = file("release.p12")
+            storePassword = "mayitv123"
+            keyAlias = "mayitv"
+            keyPassword = "mayitv123"
+        }
+    }
+
     defaultConfig {
         applicationId = "com.mayitv.app"
         minSdk = 21
         targetSdk = 34
-        versionCode = 1
+        versionCode = (project.findProperty("versionCode")?.toString()?.toIntOrNull()) ?: 1
         versionName = "1.0"
     }
 
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("fixed")
+        }
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("fixed")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -30,6 +44,7 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 

@@ -85,6 +85,15 @@ class MainActivity : AppCompatActivity() {
             setOnClickListener { startActivity(Intent(this@MainActivity, SearchActivity::class.java)) }
         }
         b.tabs.addView(search, lp)
+        val update = Button(this).apply {
+            text = "检查更新"
+            isFocusable = true
+            isAllCaps = false
+            background = ContextCompat.getDrawable(this@MainActivity, R.drawable.tab_bg)
+            setTextColor(Color.WHITE)
+            setOnClickListener { checkUpdate() }
+        }
+        b.tabs.addView(update, lp)
         tabButtons.first().setTextColor(accent)
         b.tabs.getChildAt(0).requestFocus()
     }
@@ -123,5 +132,44 @@ class MainActivity : AppCompatActivity() {
         if (currentType == 0) return
         page++
         loadCategory(currentType, page)
+    }
+
+    private fun toast(msg: String) =
+        android.widget.Toast.makeText(this, msg, android.widget.Toast.LENGTH_SHORT).show()
+
+    /** 检查更新：私有仓库/查询失败时回退到浏览器打开下载页 */
+    private fun checkUpdate() {
+        toast("检查更新中…")
+        lifecycleScope.launch {
+            val rel = UpdateChecker.latest()
+            if (rel == null) {
+                startActivity(
+                    Intent(Intent.ACTION_VIEW, android.net.Uri.parse(UpdateChecker.webUrl))
+                )
+                return@launch
+            }
+            if (rel.versionCode <= BuildConfig.VERSION_CODE) {
+                toast("已是最新版本")
+                return@launch
+            }
+            toast("发现新版本 v${rel.versionCode}，开始下载…")
+            val file = UpdateChecker.download(this@MainActivity, rel.apkUrl)
+            if (file == null) {
+                toast("下载失败，请重试或手动更新")
+                return@launch
+            }
+            installApk(file)
+        }
+    }
+
+    private fun installApk(file: java.io.File) {
+        val uri = androidx.core.content.FileProvider.getUriForFile(
+            this, "$packageName.fileprovider", file
+        )
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, "application/vnd.android.package-archive")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        startActivity(intent)
     }
 }

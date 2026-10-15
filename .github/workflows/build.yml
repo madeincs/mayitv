@@ -4,6 +4,9 @@ on:
   push:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,12 +29,22 @@ jobs:
         with:
           gradle-version: '8.2'
 
-      - name: Build debug APK
-        run: gradle assembleDebug --no-daemon --stacktrace
+      - name: Build signed debug APK
+        run: gradle assembleDebug -PversionCode=${{ github.run_number }} --no-daemon --stacktrace
 
-      - name: Upload APK
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: MayiTV-apk
           path: app/build/outputs/apk/debug/*.apk
           retention-days: 30
+
+      - name: Publish GitHub Release (for in-app update)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create v${{ github.run_number }} \
+            app/build/outputs/apk/debug/app-debug.apk \
+            --title "v${{ github.run_number }}" \
+            --notes "自动构建 #${{ github.run_number }}" \
+            --latest || true
