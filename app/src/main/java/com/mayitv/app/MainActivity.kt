@@ -1,7 +1,6 @@
 package com.mayitv.app
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
 import android.widget.LinearLayout
@@ -13,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mayitv.app.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
 
-/** 原生首页：顶部分类标签 + 影片网格 + 滚动翻页 */
+/** 原生首页：品牌栏 + 胶囊分类标签 + 影片网格 + 滚动翻页 */
 class MainActivity : AppCompatActivity() {
 
     private lateinit var b: ActivityMainBinding
@@ -26,7 +25,6 @@ class MainActivity : AppCompatActivity() {
     private var page = 1
     private var loading = false
     private var hasMore = true
-    private val accent by lazy { ContextCompat.getColor(this, R.color.accent) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,46 +54,50 @@ class MainActivity : AppCompatActivity() {
         loadHome()
     }
 
+    private fun makePill(text: String): Button {
+        val btn = Button(this)
+        btn.text = text
+        btn.isFocusable = true
+        btn.isAllCaps = false
+        btn.background = ContextCompat.getDrawable(this, R.drawable.tab_pill)
+        btn.backgroundTintList = null
+        btn.paddingStart = dp(18)
+        btn.paddingEnd = dp(18)
+        btn.paddingTop = dp(9)
+        btn.paddingBottom = dp(9)
+        btn.setTextSize(14f)
+        btn.setTextColor(ContextCompat.getColorStateList(this, R.color.tab_text))
+        return btn
+    }
+
     private fun buildTabs() {
         b.tabs.removeAllViews()
         tabButtons.clear()
         val lp = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply { marginEnd = 12 }
+        ).apply { marginEnd = dp(10) }
 
         for ((name, type) in tabs) {
-            val btn = Button(this).apply {
-                text = name
-                isFocusable = true
-                isAllCaps = false
-                background = ContextCompat.getDrawable(this@MainActivity, R.drawable.tab_bg)
-                setTextColor(Color.WHITE)
-                setOnClickListener { selectType(type) }
-            }
+            val btn = makePill(name)
+            btn.setOnClickListener { selectType(type) }
             tabButtons.add(btn)
             b.tabs.addView(btn, lp)
         }
-        val search = Button(this).apply {
-            text = "搜索"
+        b.tabs.addView(makePill("搜索").apply {
             isFocusable = true
-            isAllCaps = false
-            background = ContextCompat.getDrawable(this@MainActivity, R.drawable.tab_bg)
-            setTextColor(Color.WHITE)
             setOnClickListener { startActivity(Intent(this@MainActivity, SearchActivity::class.java)) }
-        }
-        b.tabs.addView(search, lp)
-        val update = Button(this).apply {
-            text = "检查更新"
+        }, lp)
+        b.tabs.addView(makePill("检查更新").apply {
             isFocusable = true
-            isAllCaps = false
-            background = ContextCompat.getDrawable(this@MainActivity, R.drawable.tab_bg)
-            setTextColor(Color.WHITE)
             setOnClickListener { checkUpdate() }
-        }
-        b.tabs.addView(update, lp)
-        tabButtons.first().setTextColor(accent)
+        }, lp)
+        refreshTabStyles()
         b.tabs.getChildAt(0).requestFocus()
+    }
+
+    private fun refreshTabStyles() {
+        tabButtons.forEachIndexed { i, btn -> btn.isActivated = tabs[i].second == currentType }
     }
 
     private fun selectType(type: Int) {
@@ -104,9 +106,7 @@ class MainActivity : AppCompatActivity() {
         page = 1
         hasMore = type != 0
         adapter.clear()
-        tabButtons.forEachIndexed { i, btn ->
-            btn.setTextColor(if (tabs[i].second == type) accent else Color.WHITE)
-        }
+        refreshTabStyles()
         if (type == 0) loadHome() else loadCategory(type, 1)
     }
 
@@ -135,6 +135,8 @@ class MainActivity : AppCompatActivity() {
         page++
         loadCategory(currentType, page)
     }
+
+    private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
 
     private fun toast(msg: String) =
         android.widget.Toast.makeText(this, msg, android.widget.Toast.LENGTH_SHORT).show()

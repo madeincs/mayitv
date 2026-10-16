@@ -9,8 +9,14 @@
         android:id="@+id/playerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:use_controller="false"
-        app:resize_mode="fit" />
+        app:resize_mode="fit"
+        app:use_controller="false" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="130dp"
+        android:layout_gravity="top"
+        android:background="@drawable/top_scrim" />
 
     <TextView
         android:id="@+id/title"
@@ -18,27 +24,30 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|start"
         android:layout_marginStart="18dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="16dp"
         android:ellipsize="end"
         android:maxWidth="500dp"
         android:maxLines="1"
         android:shadowColor="#000000"
-        android:shadowRadius="4"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp" />
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="5"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="#AA000000"
-        android:paddingStart="24dp"
+        android:background="@drawable/status_pill"
+        android:paddingStart="26dp"
         android:paddingTop="14dp"
-        android:paddingEnd="24dp"
+        android:paddingEnd="26dp"
         android:paddingBottom="14dp"
         android:textColor="@color/white"
-        android:textSize="22sp"
+        android:textSize="18sp"
         android:visibility="gone" />
 
     <TextView
@@ -46,10 +55,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="18dp"
+        android:layout_marginBottom="20dp"
         android:shadowColor="#000000"
+        android:shadowDx="0"
+        android:shadowDy="1"
         android:shadowRadius="4"
         android:text="@string/player_hint"
-        android:textColor="#CCCCCC"
-        android:textSize="14sp" />
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp" />
 </FrameLayout>

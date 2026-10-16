@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
-    android:background="@drawable/card_bg"
+    android:background="@drawable/episode_chip"
     android:ellipsize="end"
     android:gravity="center"
     android:maxLines="1"
-    android:padding="10dp"
-    android:textColor="#E6E6E6"
+    android:padding="11dp"
+    android:textColor="@color/episode_text"
     android:textSize="13sp" />

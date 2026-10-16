@@ -4,3 +4,6 @@ build/
 *.apk
 local.properties
 .DS_Store
+
+# 调试截图
+screenshots/

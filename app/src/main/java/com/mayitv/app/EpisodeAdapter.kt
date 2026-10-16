@@ -29,6 +29,8 @@ class EpisodeAdapter(private val onClick: (Episode) -> Unit) : RecyclerView.Adap
             itemView.isFocusable = true
             itemView.isFocusableInTouchMode = true
             itemView.setOnFocusChangeListener { v, hasFocus ->
+                val s = if (hasFocus) 1.06f else 1f
+                v.animate().scaleX(s).scaleY(s).setDuration(120).start()
                 v.z = if (hasFocus) 6f else 0f
             }
         }

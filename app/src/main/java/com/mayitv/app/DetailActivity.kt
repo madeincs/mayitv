@@ -1,8 +1,10 @@
 package com.mayitv.app
 
 import android.content.Intent
-import android.graphics.Color
+import android.graphics.Outline
 import android.os.Bundle
+import android.view.View
+import android.view.ViewOutlineProvider
 import android.widget.Button
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +23,6 @@ class DetailActivity : AppCompatActivity() {
     private val sourceButtons = mutableListOf<Button>()
     private var detail: VodDetail? = null
     private var currentSource = 0
-    private val accent by lazy { ContextCompat.getColor(this, R.color.accent) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +31,13 @@ class DetailActivity : AppCompatActivity() {
 
         val id = intent.getStringExtra("id") ?: run { finish(); return }
         b.title.text = intent.getStringExtra("title") ?: ""
+
+        // 封面四角圆角，与卡片圆角对齐
+        b.cover.viewOutlineProvider = object : ViewOutlineProvider() {
+            override fun getOutline(view: View, outline: Outline) =
+                outline.setRoundRect(0, 0, view.width, view.height, 14f)
+        }
+        b.cover.clipToOutline = true
 
         epAdapter = EpisodeAdapter { ep -> play(ep) }
         b.episodes.layoutManager = GridLayoutManager(this, 6)
@@ -61,27 +69,36 @@ class DetailActivity : AppCompatActivity() {
         val lp = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
-        ).apply { marginEnd = 12 }
+        ).apply { marginEnd = dp(10) }
 
-        d.sources.forEachIndexed { i, src ->
+        d.sources.forEachIndexed { idx, src ->
             val btn = Button(this).apply {
                 text = src.name
                 isFocusable = true
                 isAllCaps = false
-                background = ContextCompat.getDrawable(this@DetailActivity, R.drawable.tab_bg)
-                setTextColor(if (i == currentSource) accent else Color.WHITE)
-                setOnClickListener { currentSource = i; showEpisodes(); refreshSourceStyles() }
+                background = ContextCompat.getDrawable(this@DetailActivity, R.drawable.tab_pill)
+                backgroundTintList = null
+                paddingStart = dp(18)
+                paddingEnd = dp(18)
+                paddingTop = dp(9)
+                paddingBottom = dp(9)
+                textSize = 14f
+                setTextColor(ContextCompat.getColorStateList(this@DetailActivity, R.color.tab_text))
+                setOnClickListener {
+                    currentSource = idx
+                    showEpisodes()
+                    refreshSourceStyles()
+                }
             }
             sourceButtons.add(btn)
             b.sources.addView(btn, lp)
         }
         showEpisodes()
+        refreshSourceStyles()
     }
 
     private fun refreshSourceStyles() {
-        sourceButtons.forEachIndexed { i, btn ->
-            btn.setTextColor(if (i == currentSource) accent else Color.WHITE)
-        }
+        sourceButtons.forEachIndexed { i, btn -> btn.isActivated = (i == currentSource) }
     }
 
     private fun showEpisodes() {
@@ -98,4 +115,6 @@ class DetailActivity : AppCompatActivity() {
                 .putExtra("title", "${d.title} · ${ep.name}")
         )
     }
+
+    private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
 }
