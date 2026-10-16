@@ -47,7 +47,7 @@ class VodAdapter(private val onClick: (Vod) -> Unit) : RecyclerView.Adapter<VodA
             itemView.isFocusable = true
             itemView.isFocusableInTouchMode = true
             // 封面只圆上两角，与卡片圆角对齐
-            cover.viewOutlineProvider = object : ViewOutlineProvider() {
+            cover.outlineProvider = object : ViewOutlineProvider() {
                 override fun getOutline(view: View, outline: Outline) {
                     val r = 14f
                     val p = Path()

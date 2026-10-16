@@ -33,7 +33,7 @@ class DetailActivity : AppCompatActivity() {
         b.title.text = intent.getStringExtra("title") ?: ""
 
         // 封面四角圆角，与卡片圆角对齐
-        b.cover.viewOutlineProvider = object : ViewOutlineProvider() {
+        b.cover.outlineProvider = object : ViewOutlineProvider() {
             override fun getOutline(view: View, outline: Outline) =
                 outline.setRoundRect(0, 0, view.width, view.height, 14f)
         }
