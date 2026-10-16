@@ -61,10 +61,7 @@ class MainActivity : AppCompatActivity() {
         btn.isAllCaps = false
         btn.background = ContextCompat.getDrawable(this, R.drawable.tab_pill)
         btn.backgroundTintList = null
-        btn.paddingStart = dp(18)
-        btn.paddingEnd = dp(18)
-        btn.paddingTop = dp(9)
-        btn.paddingBottom = dp(9)
+        btn.setPaddingRelative(dp(18), dp(9), dp(18), dp(9))
         btn.setTextSize(14f)
         btn.setTextColor(ContextCompat.getColorStateList(this, R.color.tab_text))
         return btn

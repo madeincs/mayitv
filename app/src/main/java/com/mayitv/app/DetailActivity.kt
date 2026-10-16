@@ -78,10 +78,7 @@ class DetailActivity : AppCompatActivity() {
                 isAllCaps = false
                 background = ContextCompat.getDrawable(this@DetailActivity, R.drawable.tab_pill)
                 backgroundTintList = null
-                paddingStart = dp(18)
-                paddingEnd = dp(18)
-                paddingTop = dp(9)
-                paddingBottom = dp(9)
+                setPaddingRelative(dp(18), dp(9), dp(18), dp(9))
                 textSize = 14f
                 setTextColor(ContextCompat.getColorStateList(this@DetailActivity, R.color.tab_text))
                 setOnClickListener {
