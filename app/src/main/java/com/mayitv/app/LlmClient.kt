@@ -74,8 +74,8 @@ class SenseNovaLlmClient(
         withContext(Dispatchers.IO) {
             val body = JSONObject().apply {
                 put("model", model)
-                put("messages", messages.toJsonArray())
-                put("tools", AgentTools.specs.toJsonArray())
+                put("messages", messages.toJson())
+                put("tools", AgentTools.specs.toToolsJson())
             }
             val req = okhttp3.Request.Builder()
                 .url("$baseUrl/chat/completions")
@@ -116,8 +116,8 @@ class SenseNovaLlmClient(
         return LlmReply(text = content ?: "（空回复）")
     }
 
-    private fun List<LlmMessage>.toJsonArray(): JSONArray = JSONArray().apply {
-        for (m in this@toJsonArray) {
+    private fun List<LlmMessage>.toJson(): JSONArray = JSONArray().apply {
+        for (m in this@toJson) {
             put(JSONObject().apply {
                 put("role", m.role)
                 when (m.role) {
@@ -147,8 +147,8 @@ class SenseNovaLlmClient(
         }
     }
 
-    private fun List<ToolSpec>.toJsonArray(): JSONArray = JSONArray().apply {
-        for (t in this@toJsonArray) {
+    private fun List<ToolSpec>.toToolsJson(): JSONArray = JSONArray().apply {
+        for (t in this@toToolsJson) {
             put(JSONObject().apply {
                 put("type", "function")
                 put("function", JSONObject().apply {
