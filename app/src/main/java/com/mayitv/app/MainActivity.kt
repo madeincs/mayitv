@@ -85,6 +85,10 @@ class MainActivity : AppCompatActivity() {
             isFocusable = true
             setOnClickListener { startActivity(Intent(this@MainActivity, SearchActivity::class.java)) }
         }, lp)
+        b.tabs.addView(makePill("AI 助手").apply {
+            isFocusable = true
+            setOnClickListener { startActivity(Intent(this@MainActivity, AgentActivity::class.java)) }
+        }, lp)
         b.tabs.addView(makePill("检查更新").apply {
             isFocusable = true
             setOnClickListener { checkUpdate() }

@@ -23,6 +23,11 @@ android {
         targetSdk = 34
         versionCode = (project.findProperty("versionCode")?.toString()?.toIntOrNull()) ?: 1
         versionName = "1.0"
+
+        // LLM 配置：密钥从 gradle 属性注入（~/.gradle/gradle.properties 或 local.properties），不写入仓库
+        buildConfigField("String", "LLM_BASE_URL", "\"${project.findProperty("llmBaseUrl") ?: "https://api.sensenova.cn/compatible-mode/v1"}\"")
+        buildConfigField("String", "LLM_API_KEY", "\"${project.findProperty("llmApiKey") ?: ""}\"")
+        buildConfigField("String", "LLM_MODEL", "\"${project.findProperty("llmModel") ?: "SenseNova-5.5"}\"")
     }
 
     buildTypes {

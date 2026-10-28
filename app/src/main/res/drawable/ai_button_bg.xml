@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- AI 对话入口：蓝紫渐变胶囊 + 底部柔光 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <gradient
+                android:angle="0"
+                android:startColor="#223D5AFF"
+                android:endColor="#228B5CF6"
+                android:centerColor="#113D5AFF" />
+            <corners android:radius="28dp" />
+        </shape>
+    </item>
+    <item
+        android:left="1dp"
+        android:top="1dp"
+        android:right="1dp"
+        android:bottom="1dp">
+        <shape>
+            <gradient
+                android:angle="0"
+                android:startColor="#3D5AFF"
+                android:endColor="#8B5CF6" />
+            <corners android:radius="27dp" />
+        </shape>
+    </item>
+</layer-list>
